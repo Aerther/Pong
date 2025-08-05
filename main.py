@@ -108,9 +108,17 @@ while not exit:
         pos_y_rect2 = 0
 
     # Checagem de colisão da bolinha com o quadrado
+    collideObject = ball
+    collideObject.x = collideObject.x + 1*value_x
+    collideObject.y = collideObject.y + 1*value_y
     
+    if first_raq.colliderect(collideObject) or second_raq.colliderect(collideObject):
+        value_x = -value_x
 
-    
+        if pos_y + size_square + 1*value_y >= pos_y_rect1:
+            value_y = -value_y
+            value_x = -value_x
+        
     # Desenha as formas para o jogo
     pygame.draw.rect(canva, (255, 255, 255), first_raq)
     pygame.draw.rect(canva, (255, 255, 255), second_raq)
@@ -121,4 +129,4 @@ while not exit:
     pygame.display.update()
 
     # Tick do jogo para que não seja infinitamente rápido
-    clock.tick(60)
+    clock.tick(100)
