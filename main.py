@@ -20,12 +20,12 @@ height_rect = 100
 # Propriedade para iniciação da primeira caixa, points se refere a pontuação do jogador
 points_rect1 = 0
 pos_x_rect1 = 10
-pos_y_rect1 = 0
+pos_y_rect1 = height/2 - height_rect/2
 
 # E da segunda caixa
 points_rect2 = 0
 pos_x_rect2 = width - width_rect - 10
-pos_y_rect2 = 0
+pos_y_rect2 = height/2 - height_rect/2
 
 # Necessário para que o jogo rode
 pygame.init()
@@ -45,8 +45,8 @@ while not exit:
     ball = pygame.Rect(pos_x, pos_y, size_square, size_square)
 
     # Para carregar o texto (mas ainda não aparece)
-    text1 = font.render(str(points_rect1), False, (255, 255, 255))
-    text2 = font.render(str(points_rect2), False, (255, 255, 255))
+    text1 = font.render(str(points_rect1), True, (255, 255, 255))
+    text2 = font.render(str(points_rect2), True, (255, 255, 255))
 
     # O background da janela fica preto
     canva.fill("black")
