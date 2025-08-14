@@ -1,178 +1,165 @@
 import pygame
 
-# Propriedades da janela
+# Propriedades da tela
 largura_tela = 500
 altura_tela = 400
 
-# Propriedades do quadrado (bolinha)
-pos_x_bola = largura_tela/2
-pos_y_bola = altura_tela/2
-raio_bola = 10
-
-# Propriedade para verificar em qual direção ele deve se mexer, valores: 1 e -1, vel de velocidade
-vel_x = 1
-vel_y = 1
-
-# Propriedade para o tamanho da caixa que vai rebater a bolinha
-largura_ret = 30
-altura_ret = 100
-
-# Propriedade para iniciação da primeira caixa, points se refere a pontuação do jogador
-pontos_raq1 = 0
-pos_x_raq1 = 10
-pos_y_raq1 = altura_tela/2 - altura_ret/2
-
-# E da segunda caixa
-pontos_raq2 = 0
-pos_x_raq2 = largura_tela - largura_ret - 10
-pos_y_raq2 = altura_tela/2 - altura_ret/2
-
-# Necessário para que o jogo rode
+# Propriedades do pygame
 pygame.init()
 
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Pong Game")
 relogio = pygame.time.Clock()
 
-# A fonte do texto
-fonte = pygame.font.Font(None, 40)
-
 sair = False
 
+# Propriedades da bola
+pos_x_bola = largura_tela/2
+pos_y_bola = altura_tela/2
+raio_bola = 10
+
+# Propriedades das raquetes
+largura_raq = 30
+altura_raq = 100
+
+# Raquete 1
+pos_x_raq1 = 0
+pos_y_raq1 = altura_tela/2
+
+# Raquete 2
+pos_x_raq2 = largura_tela - largura_raq
+pos_y_raq2 = altura_tela/2
+
+# Pontuação
+pontos_raq1 = 0
+pontos_raq2 = 0
+
+# Velocidade da bola
+vel_x = 1
+vel_y = 1
+
+# Fonte para o placar
+fonte = pygame.font.Font(None, 40)
+
 while not sair:
-    primeira_raquete = pygame.Rect(pos_x_raq1, pos_y_raq1, largura_ret, altura_ret)
-    segunda_raquete = pygame.Rect(pos_x_raq2, pos_y_raq2, largura_ret, altura_ret)
-    bola = pygame.Rect(pos_x_bola, pos_y_bola, 2*raio_bola, 2*raio_bola)
-
-    # Para carregar o texto (mas ainda não aparece)
-    
-
-    # O background da janela fica preto
     tela.fill("black")
 
-    # Checa se ele apertou algum evento da janela
+    # Setando o FPS do jogo
+    relogio.tick(100)
+
+    # Checagem de eventos do jogo
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             sair = True
 
-    # Pega as teclas que o jogador apertou
-    keys = pygame.key.get_pressed()
-
-    # Teclas do jogador 1
-    if keys[pygame.K_w]:
-        pos_y_raq1 -= 1
-    elif keys[pygame.K_s]:
-        pos_y_raq1 += 1
-
-    # Teclas do jogador 2
-    if keys[pygame.K_UP]:
-        pos_y_raq2 -= 1
-    elif keys[pygame.K_DOWN]:
-        pos_y_raq2 += 1
+    # Criação dos objetos
+    bola = pygame.Rect(pos_x_bola, pos_y_bola, 2*raio_bola, 2*raio_bola)
     
-    # Faz a bolinha andar
+    raquete_1 = pygame.Rect(pos_x_raq1, pos_y_raq1, largura_raq, altura_raq)
+    raquete_2 = pygame.Rect(pos_x_raq2, pos_y_raq2, largura_raq, altura_raq)
+
+    # Movimento da bola
     pos_x_bola += vel_x
     pos_y_bola += vel_y
 
-    # Checagem de colisão com o tamanho da janela, a bolinha
+    # Movimento pela tecla
+    keys = pygame.key.get_pressed()
 
-    # Primeiro com o eixo X
-    if bola.right > largura_tela:
-        pos_x_bola = largura_tela/2
-        pos_y_bola = altura_tela/2
-
-        if vel_x > 0:
-            vel_x = -1
-        else:
-            vel_x = 1
-
-        pontos_raq1 += 1
-    elif bola.left < 0:
-        pos_x_bola = largura_tela/2
-        pos_y_bola = altura_tela/2
-
-        if vel_x > 0:
-            vel_x = -1
-        
-        if vel_x > 0:
-            vel_x = -1
-        else:
-            vel_x = 1
-
-        pontos_raq2 += 1
-
-    # Depois com o eixo Y
-    if bola.bottom > altura_tela:
-        pos_y_bola = altura_tela - 2*raio_bola
-        vel_y = -vel_y
-    elif bola.top < 0:
-        pos_y_bola = 0
-        vel_y = -vel_y
-
-    # Checagem de colisão dos quadrados com a janela
     # Jogador 1
-    if primeira_raquete.bottom > altura_tela:
-        pos_y_raq1 = altura_tela - altura_ret
-    elif primeira_raquete.top < 0:
-        pos_y_raq1 = 0
+    if keys[pygame.K_w]:
+        pos_y_raq1 -= 1 
+    elif keys[pygame.K_s]:
+        pos_y_raq1 += 1
     
     # Jogador 2
-    if segunda_raquete.bottom > altura_tela:
-        pos_y_raq2 = altura_tela - altura_ret
-    elif segunda_raquete.top < 0:
+    if keys[pygame.K_UP]:
+        pos_y_raq2 -= 1 
+    elif keys[pygame.K_DOWN]:
+        pos_y_raq2 += 1
+
+    # Colisão das raquetes com a tela
+    if raquete_1.bottom > altura_tela:
+        pos_y_raq1 = altura_tela - altura_raq
+    elif raquete_1.top < 0:
+        pos_y_raq1 = 0
+    
+    if raquete_2.bottom > altura_tela:
+        pos_y_raq2 = altura_tela - altura_raq
+    elif raquete_2.top < 0:
         pos_y_raq2 = 0
 
-    # Checagem de colisão da bolinha com o quadrado
-    if primeira_raquete.colliderect(bola):
-        if primeira_raquete.right < bola.right: # Colisão pela esquerda ou direita
+    # Colisão da bola com a tela
+    # Eixo X
+    if bola.right > largura_tela:
+        vel_x = -1
+
+        pontos_raq1 += 1
+
+        pos_x_bola = largura_tela/2
+        pos_y_bola = altura_tela/2
+    elif bola.left < 0:
+        vel_x = 1
+
+        pontos_raq2 += 1
+        
+        pos_x_bola = largura_tela/2
+        pos_y_bola = altura_tela/2
+
+    # Eixo Y
+    if bola.bottom > altura_tela:
+        vel_y = -vel_y
+
+        pos_y_bola = altura_tela - 2*raio_bola
+    elif bola.top < 0:
+        vel_y = -vel_y
+
+        pos_y_bola = 0
+
+    # Colisão da primeira raquete com a bola
+    if raquete_1.colliderect(bola):
+        if raquete_1.right < bola.right:
             vel_x = -vel_x
 
-            pos_x_bola = primeira_raquete.right
+            pos_x_bola = raquete_1.right
 
-            vel_x += 0.1
-        elif primeira_raquete.top > bola.top: # Colisão pelo topo
+            vel_x = vel_x * 1.1
+        elif raquete_1.top > bola.top:
             vel_y = -vel_y
 
-            pos_y_bola = primeira_raquete.top - 2*raio_bola
-        else: # Colisão por baixo
+            pos_y_bola = raquete_1.top - 2*raio_bola
+        else:
             vel_y = -vel_y
 
-            pos_y_bola = primeira_raquete.bottom + 2*raio_bola
+            pos_y_bola = raquete_1.bottom
     
-    if segunda_raquete.colliderect(bola):
-        if segunda_raquete.midtop[1] > bola.midtop[1]: # Colisão pelo topo
-            vel_y = -vel_y
-
-            bola.bottom = segunda_raquete.top
-            pos_y_bola = bola.y - 1
-        elif segunda_raquete.midleft[0] > bola.midleft[0] or segunda_raquete.midright[0] < bola.midright[0]: # Colisão pela esquerda ou direita
+    # Colisão da segunda raquete com a bola
+    if raquete_2.colliderect(bola):
+        if raquete_2.left > bola.left:
             vel_x = -vel_x
 
-            bola.right = segunda_raquete.left
-            pos_x_bola = bola.x
+            pos_x_bola = raquete_2.left - 2*raio_bola
 
-            vel_x -= 0.1
-        else: # Colisão por baixo
+            vel_x = vel_x * 1.1
+        elif raquete_2.top > bola.top:
             vel_y = -vel_y
 
-            bola.top = segunda_raquete.bottom
-            pos_y_bola = bola.y + 1
+            pos_y_bola = raquete_2.top - 2*raio_bola
+        else:
+            vel_y = -vel_y
 
+            pos_y_bola = raquete_2.bottom
+
+    # Para renderizar o placar na tela
     texto_pontos_1 = fonte.render(str(pontos_raq1), True, (255, 255, 255))
     texto_pontos_2 = fonte.render(str(pontos_raq2), True, (255, 255, 255))
     
-    # Para mostrar o texto, o calculo serve para colocar eles espaçadamente iguais
     tela.blit(texto_pontos_1, (largura_tela * 1/3, 5))
     tela.blit(texto_pontos_2, (largura_tela * 2/3, 5))
-        
-    # Desenha as formas para o jogo
-    pygame.draw.rect(tela, (255, 255, 255), primeira_raquete)
-    pygame.draw.rect(tela, (255, 255, 255), segunda_raquete)
-
+    
+    # Para desenhar as formas na tela
     pygame.draw.circle(tela, (255, 0, 0), (bola.centerx, bola.centery), raio_bola)
 
-    # Faz o update na tela
-    pygame.display.update()
+    pygame.draw.rect(tela, (255, 255, 255), raquete_1)
+    pygame.draw.rect(tela, (255, 255, 255), raquete_2)
 
-    # Tick do jogo para que não seja infinitamente rápido
-    relogio.tick(100)
+    pygame.display.update()
