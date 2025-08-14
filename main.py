@@ -45,8 +45,7 @@ while not sair:
     bola = pygame.Rect(pos_x_bola, pos_y_bola, 2*raio_bola, 2*raio_bola)
 
     # Para carregar o texto (mas ainda não aparece)
-    texto_pontos_1 = fonte.render(str(pontos_raq1), True, (255, 255, 255))
-    texto_pontos_2 = fonte.render(str(pontos_raq2), True, (255, 255, 255))
+    
 
     # O background da janela fica preto
     tela.fill("black")
@@ -125,23 +124,20 @@ while not sair:
 
     # Checagem de colisão da bolinha com o quadrado
     if primeira_raquete.colliderect(bola):
-        if primeira_raquete.midtop[1] > bola.midtop[1]: # Colisão pelo topo
-            vel_y = -vel_y
-
-            bola.bottom = primeira_raquete.top
-            pos_y_bola = bola.y - 1
-        elif primeira_raquete.midleft[0] > bola.midleft[0] or primeira_raquete.midright[0] < bola.midright[0]: # Colisão pela esquerda ou direita
+        if primeira_raquete.right < bola.right: # Colisão pela esquerda ou direita
             vel_x = -vel_x
 
-            bola.left = primeira_raquete.right
-            pos_x_bola = bola.x
+            pos_x_bola = primeira_raquete.right
 
             vel_x += 0.1
+        elif primeira_raquete.top > bola.top: # Colisão pelo topo
+            vel_y = -vel_y
+
+            pos_y_bola = primeira_raquete.top - 2*raio_bola
         else: # Colisão por baixo
             vel_y = -vel_y
 
-            bola.top = primeira_raquete.bottom
-            pos_y_bola = bola.y + 1
+            pos_y_bola = primeira_raquete.bottom + 2*raio_bola
     
     if segunda_raquete.colliderect(bola):
         if segunda_raquete.midtop[1] > bola.midtop[1]: # Colisão pelo topo
@@ -162,6 +158,9 @@ while not sair:
             bola.top = segunda_raquete.bottom
             pos_y_bola = bola.y + 1
 
+    texto_pontos_1 = fonte.render(str(pontos_raq1), True, (255, 255, 255))
+    texto_pontos_2 = fonte.render(str(pontos_raq2), True, (255, 255, 255))
+    
     # Para mostrar o texto, o calculo serve para colocar eles espaçadamente iguais
     tela.blit(texto_pontos_1, (largura_tela * 1/3, 5))
     tela.blit(texto_pontos_2, (largura_tela * 2/3, 5))
